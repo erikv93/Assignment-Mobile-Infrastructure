@@ -1,6 +1,7 @@
 package erik.caa;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -23,6 +24,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements SensorEventListener{
 
     Sensor accelerometer;
+    Sensor light;
     SensorManager sm;
     TextView dataTextView;
     CountDownTimer shakeCountdownTimer;
@@ -31,7 +33,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     Button startTimerButton;
     ProgressBar progressBar;
 
-    public static final int SHAKE_DURATION = 10000;
+    public static final int SHAKE_DURATION = 5000;
+    public static final int LIGHT_TRESHOLD = 100;
 
 
     @Override
@@ -41,12 +44,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
         progressBar.setMax(SHAKE_DURATION);
+
         startTimerButton = (Button)findViewById(R.id.startTimerButton);
 
         sm = (SensorManager)getSystemService(SENSOR_SERVICE);
         accelerometer = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        light = sm.getDefaultSensor(Sensor.TYPE_LIGHT);
+
         dataTextView = (TextView)findViewById(R.id.sensorDataTV);
         shakeCountdownTimer = new CountDownTimer(SHAKE_DURATION, 100) {
+
             @Override
             public void onTick(long millisUntilFinished) {
                 int test = SHAKE_DURATION - (int)millisUntilFinished;
@@ -59,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 startTimerButton.setEnabled(true);
                 printLargest();
                 progressBar.setProgress(0);
+                shakeData.clear();
             }
         };
     }
@@ -83,7 +91,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     protected void onResume(){
         super.onResume();
-        sm.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        sm.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+        sm.registerListener(this, light, SensorManager.SENSOR_DELAY_UI);
     }
 
     protected void onPause() {
@@ -107,8 +116,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 shakeData.add(y);
             }
         }
+        if (sensor.getType() == Sensor.TYPE_LIGHT) {
+            Log.d(this.getLocalClassName(),"Light: " + event.values[0] );
+            if (event.values[0] >= LIGHT_TRESHOLD) {
+                getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+                dataTextView.setTextColor(Color.BLACK);
+                progressBar.setBackgroundColor(Color.WHITE);
+            } else if (event.values[0] < LIGHT_TRESHOLD) {
+                getWindow().getDecorView().setBackgroundColor(Color.BLACK);
+                dataTextView.setTextColor(Color.WHITE);
+                progressBar.setBackgroundColor(Color.GRAY);
+            }
+        }
 
     }
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
