@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     ProgressBar progressBar;
 
     public static final int SHAKE_DURATION = 5000;
-    public static final int LIGHT_TRESHOLD = 10;
+    public static final int LIGHT_TRESHOLD = 2;
 
 
     @Override
@@ -72,10 +72,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public void printLargest() {
-        String largest = "Finished! you shaked this hard:" + getLargest(shakeData).toString();
-        Log.d(this.getLocalClassName(),largest);
-        Toast.makeText(MainActivity.this, largest, Toast.LENGTH_SHORT).show();
+        Log.d(this.getLocalClassName(),getScoreResponse(getLargest(shakeData)));
+        Toast.makeText(MainActivity.this, getScoreResponse(getLargest(shakeData)), Toast.LENGTH_SHORT).show();
     }
+
+    public String getScoreResponse(float score) {
+        if (score < 20) {
+            return String.format("Je score was: %.1f, dat is niet zo goed, maar geef de hoop niet op!", score);
+        } else if (score >= 20 && score < 35) {
+            return String.format("Je score was %.1f, een redelijk score, maar dat kan beter!", score);
+        } else if (score >= 35 && score < 45) {
+            return String.format("Wauw, je score was %.1f, ga zo door!", score);
+        } else {
+            return String.format("Serieus, een score van %.1f? Volgens deze app had je beter Tinder kunnen installeren", score);
+        }
+
+    };
 
     public Float getLargest(List<Float> list) {
         return Collections.max(list);
@@ -113,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             dataTextView.setText(dataString);
 
             if (recordData) {
-                shakeData.add(y+x+z);
+                shakeData.add((y+x+z)-9.3f);
             }
         }
         if (sensor.getType() == Sensor.TYPE_LIGHT) {
