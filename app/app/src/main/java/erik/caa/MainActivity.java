@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     ProgressBar progressBar;
 
     public static final int SHAKE_DURATION = 5000;
-    public static final int LIGHT_TRESHOLD = 100;
+    public static final int LIGHT_TRESHOLD = 10;
 
 
     @Override
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             dataTextView.setText(dataString);
 
             if (recordData) {
-                shakeData.add(y);
+                shakeData.add(y+x+z);
             }
         }
         if (sensor.getType() == Sensor.TYPE_LIGHT) {
