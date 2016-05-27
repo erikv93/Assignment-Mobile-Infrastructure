@@ -77,16 +77,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public String getScoreResponse(float score) {
-        if (score < 20) {
+        if (score < 35) {
             return String.format("Je score was: %.1f, dat is niet zo goed, maar geef de hoop niet op!", score);
-        } else if (score >= 20 && score < 35) {
+        } else if (score >= 35 && score < 40) {
             return String.format("Je score was %.1f, een redelijk score, maar dat kan beter!", score);
-        } else if (score >= 35 && score < 45) {
+        } else if (score >= 40 && score < 47.5) {
             return String.format("Wauw, je score was %.1f, ga zo door!", score);
         } else {
             return String.format("Serieus, een score van %.1f? Volgens deze app had je beter Tinder kunnen installeren", score);
         }
-
     };
 
     public Float getLargest(List<Float> list) {
