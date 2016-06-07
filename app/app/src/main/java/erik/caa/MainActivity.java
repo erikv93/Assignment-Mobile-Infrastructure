@@ -1,6 +1,7 @@
 package erik.caa;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.Sensor;
@@ -9,6 +10,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.CountDownTimer;
 import android.os.Debug;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,9 +21,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener{
 
@@ -34,8 +46,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     List<Float> shakeData = new ArrayList<>();
     boolean recordData = false;
     Button startTimerButton;
+    RequestQueue queue;
     ProgressBar progressBar;
     SharedPreferences sharedPreferences;
+
+    //URLS for API
+    String baseURL = "https://oege.ie.hva.nl/~leuvert001/php/mobdev/";
+    String createURL =  baseURL + "hiscoreCreate.php";
 
     public static final int SHAKE_DURATION = 5000;
     public static final int LIGHT_TRESHOLD = 2;
@@ -48,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
         progressBar.setMax(SHAKE_DURATION);
+
+        queue = Volley.newRequestQueue(this);
 
         sharedPreferences = getPreferences(Context.MODE_PRIVATE);
 
@@ -74,11 +93,58 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 startTimerButton.setEnabled(true);
                 printLargest();
                 progressBar.setProgress(0);
+                highScoreSubmitAlert(getName(), getLargest(shakeData).intValue());
                 shakeData.clear();
             }
         };
 
         setNameEditText(getName());
+    }
+
+    public void highScoreSubmitAlert(final String name, final int score) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Wil je je score opsturen naar de ranglijst?");
+        builder.setCancelable(true);
+        builder.setPositiveButton("Ja",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        createHiScore(name, score);
+                    }
+                }).show();
+    }
+
+
+    public void createHiScore(final String playerName, final int score) {
+        StringRequest postRequest = new StringRequest(Request.Method.POST, createURL,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        Log.d("Error.Response", error.toString());
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("name", playerName);
+                params.put("score", String.valueOf(score));
+
+                return params;
+            }
+        };
+        queue.add(postRequest);
     }
 
     public void setNameEditText(String name) {
@@ -171,6 +237,5 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 }
