@@ -1,0 +1,37 @@
+hiscoreCreate.php:
+	Neemt:
+		'name'		= de naam van de hiscore			{varchar(10)}	[POST]
+		'score'		= de score van de hiscore			{int}		[POST]
+	Geeft:
+		'success'	= of de operatie successvol was			{bool}
+		'message'	= error message (alleen als 'success' false is)	{string}
+
+hiscoreDelete.php:
+	Neemt:
+		'id'		= het id van de hiscore om te deleten		{int}		[POST]
+	Geeft:
+		'success'	= of de operatie successvol was			{bool}
+		'message'	= error message (alleen als 'success' false is)	{string}
+
+hiscoreSelect.php:
+	Neemt:
+		'id'		= de id van de hiscore		(OPTIONEEL)	{int}		[POST|GET]
+		'name'		= de naam van de hiscore	(OPTIONEEL)	{varchar(10)}	[POST|GET]
+		'score'		= de score van de hiscore	(OPTIONEEL)	{int}		[POST|GET]
+	Geeft:
+		'success'	= of de operatie successvol was			{bool}
+		'message'	= error message (alleen als 'success' false is)	{string}
+		'hiscore'	= array met hiscore opjecten:
+			'id'		= de id van de hiscore			{int}
+			'name'		= de naam van de hiscore		{string}
+			'score'		= de score van de hiscore		{int}
+
+hiscoreUpdate.php:
+	Neemt:
+		'id'		= de id van de hiscore				{int}		[POST]
+		'name'		= de naam van de hiscore			{varchar(10)}	[POST]
+		'score'		= de score van de hiscore			{int}		[POST]
+	Geeft:
+		'success'	= of de operatie successvol was			{bool}
+		'message'	= error message (alleen als 'success' false is)	{string}
+
