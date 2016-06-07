@@ -1,6 +1,7 @@
 package erik.caa;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,11 +29,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     Sensor light;
     SensorManager sm;
     TextView dataTextView;
+    EditText nameEditText;
     CountDownTimer shakeCountdownTimer;
     List<Float> shakeData = new ArrayList<>();
     boolean recordData = false;
     Button startTimerButton;
     ProgressBar progressBar;
+    SharedPreferences sharedPreferences;
 
     public static final int SHAKE_DURATION = 5000;
     public static final int LIGHT_TRESHOLD = 2;
@@ -45,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
         progressBar.setMax(SHAKE_DURATION);
 
+        sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+
         startTimerButton = (Button)findViewById(R.id.startTimerButton);
 
         sm = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -52,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         light = sm.getDefaultSensor(Sensor.TYPE_LIGHT);
 
         dataTextView = (TextView)findViewById(R.id.sensorDataTV);
+        nameEditText = (EditText)findViewById(R.id.nameEditText);
+
         shakeCountdownTimer = new CountDownTimer(SHAKE_DURATION, 100) {
 
             @Override
@@ -69,7 +77,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 shakeData.clear();
             }
         };
+
+        setNameEditText(getName());
     }
+
+    public void setNameEditText(String name) {
+        nameEditText.setText(name);
+    };
+
+    public String getName(){
+        String name = sharedPreferences.getString("SCHUDMEESTER_NAME", "Player");
+        return name;
+    };
 
     public void printLargest() {
         Log.d(this.getLocalClassName(),getScoreResponse(getLargest(shakeData)));
@@ -92,12 +111,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         return Collections.max(list);
     }
 
-    public void startShakeCountdown(View view) {
+    public void startShakeCountdownButtonPressed(View view) {
         if (!recordData) {
             recordData = true;
             shakeCountdownTimer.start();
             startTimerButton.setEnabled(false);
         }
+    }
+
+    public void changeNameButtonPressed(View view) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("SCHUDMEESTER_NAME", nameEditText.getText().toString());
+        editor.commit();
+        Toast.makeText(MainActivity.this, "Naam verandert", Toast.LENGTH_SHORT).show();
     }
 
     protected void onResume(){

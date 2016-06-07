@@ -19,18 +19,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="START"
-        android:onClick="startShakeCountdown"
+        android:onClick="startShakeCountdownButtonPressed"
         android:id="@+id/startTimerButton"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/progressBar"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nameEditText"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_above="@+id/startTimerButton"
+        android:layout_alignTop="@+id/changeNamebutton"
+        android:layout_toStartOf="@+id/changeNamebutton" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="VERANDER NAAM"
+        android:onClick="changeNameButtonPressed"
+        android:id="@+id/changeNamebutton"
+        android:layout_above="@+id/startTimerButton"
+        android:layout_alignEnd="@+id/startTimerButton" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/progressBar"
-        android:layout_above="@+id/startTimerButton"
         android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/startTimerButton" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>
