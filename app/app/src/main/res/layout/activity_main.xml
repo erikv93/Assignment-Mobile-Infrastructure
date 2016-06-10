@@ -22,8 +22,8 @@
         android:onClick="startShakeCountdownButtonPressed"
         android:id="@+id/startTimerButton"
         android:layout_above="@+id/progressBar"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/changeNamebutton" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -40,8 +40,8 @@
         android:text="VERANDER NAAM"
         android:onClick="changeNameButtonPressed"
         android:id="@+id/changeNamebutton"
-        android:layout_above="@+id/startTimerButton"
-        android:layout_alignEnd="@+id/startTimerButton" />
+        android:layout_alignEnd="@+id/progressBar"
+        android:layout_above="@+id/startTimerButton" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
@@ -51,4 +51,14 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="HISCORES"
+        android:onClick="onHiscoresClicked"
+        android:id="@+id/button"
+        android:layout_above="@+id/progressBar"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/startTimerButton" />
 </RelativeLayout>

@@ -2,6 +2,7 @@ package erik.caa;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.Sensor;
@@ -183,6 +184,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             shakeCountdownTimer.start();
             startTimerButton.setEnabled(false);
         }
+    }
+
+    public void onHiscoresClicked(View view) {
+        Intent intent = new Intent(this, ViewScoreActivity.class);
+        startActivity(intent);
     }
 
     public void changeNameButtonPressed(View view) {
